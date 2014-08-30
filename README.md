@@ -1,11 +1,4 @@
 jquery-align
 ============
 
-一个使用jquery实现的定位插件，开发中
-
-目前的设想是提供如下定位方式：
-
-1. 根据目标元素定位
-2. 根据鼠标事件定位
-
-定位提供基础的定位及偏移
+demo和文档请移步：[jquery-align](http://plugins.lingyu.wang/2014/08/30/jquery-align/)
