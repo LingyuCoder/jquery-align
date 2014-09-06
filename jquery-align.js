@@ -1,4 +1,5 @@
 jQuery(function() {
+	'use strict';
 	var defaultConfig = {
 		base: 'screen',
 		points: ['cc', 'cc'],
@@ -19,8 +20,9 @@ jQuery(function() {
 		var width;
 		var height = 0;
 		var node;
-		if($.isFunction(base.preventDefault)){
-			if(!base.pageX){
+		var position;
+		if ($.isFunction(base.preventDefault)) {
+			if (!base.pageX) {
 				base = new $.Event(base);
 			}
 			pos.x = base.pageX;
@@ -41,10 +43,16 @@ jQuery(function() {
 			} else {
 				node = $(base);
 				offset = node.offset();
-				pos.x = offset.left;
-				pos.y = offset.top;
-				width = node.width();
-				height = node.height();
+				position = node.css('position');
+				if (position === 'absolute' || position === 'fixed') {
+					pos.x = 0;
+					pos.y = 0;
+				} else {
+					pos.x = offset.left;
+					pos.y = offset.top;
+				}
+				width = node.outerWidth();
+				height = node.outerHeight();
 			}
 		} else if ($.isArray(base)) {
 			pos.x = base[0];
@@ -55,8 +63,16 @@ jQuery(function() {
 			offset = base.offset();
 			pos.x = offset.left;
 			pos.y = offset.top;
-			width = base.width();
-			height = base.height();
+			position = base.css('position');
+			if (position === 'absolute' || position === 'fixed') {
+				pos.x = 0;
+				pos.y = 0;
+			} else {
+				pos.x = offset.left;
+				pos.y = offset.top;
+			}
+			width = base.outerWidth();
+			height = base.outerHeight();
 		}
 
 		switch (basePoint.charAt(0)) {
@@ -88,8 +104,8 @@ jQuery(function() {
 			x: offset[0],
 			y: offset[1]
 		};
-		var width = $ele.width();
-		var height = $ele.height();
+		var width = $ele.outerWidth(true);
+		var height = $ele.outerHeight(true);
 		var basePoint = points[1];
 		switch (basePoint.charAt(0)) {
 			case 'c':
@@ -118,10 +134,8 @@ jQuery(function() {
 	$.fn.align = function(config) {
 		config = $.extend({}, defaultConfig, config);
 		config.fixed = config.base === 'screen' && config.fixed;
-
 		var self = this;
 		var base = calBase(config.base, config.points, config.fixed);
-
 		$.each(self, function(index, ele) {
 			ele = $(ele);
 			var offset = calOffset(ele, config.offset, config.points);
